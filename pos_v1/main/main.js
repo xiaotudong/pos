@@ -31,13 +31,13 @@ let buildCartItems =(inputs) => {
   return cartItems;
 }
 
- let buildItemsSubtotal = (cartItems) => {
-   return cartItems.map(cartItem => {
-     let promotionType = getPromotionType(cartItem.item.barcode);
-     let {saveprice,subtotal} = discount(cartItem,promotionType);
-     return {cartItem,saveprice,subtotal}
-   })
- }
+let buildItemsSubtotal = (cartItems) => {
+  return cartItems.map(cartItem => {
+    let promotionType = getPromotionType(cartItem.item.barcode);
+    let {saveprice,subtotal} = discount(cartItem,promotionType);
+    return {cartItem,saveprice,subtotal}
+  })
+}
 
 let getPromotionType = (barcode) => {
   let promotions = loadPromotions();
@@ -74,13 +74,13 @@ let buildItemsReceipt = (itemsSubtotal) => {
 let outputReceipt = (itemsReceipt) => {
 
   let itemSubtotal = itemsReceipt.itemsSubtotal
-  .map(items => {
-    return `名称：${items.cartItem.item.name}，\
+    .map(items => {
+      return `名称：${items.cartItem.item.name}，\
 数量：${items.cartItem.count}${items.cartItem.item.unit}，\
 单价：${formatMoney(items.cartItem.item.price)}(元)，\
 小计：${formatMoney(items.subtotal)}(元)`;
-  })
-      .join('\n');
+    })
+    .join('\n');
 
   return `***<没钱赚商店>收据***
 ${itemSubtotal}
