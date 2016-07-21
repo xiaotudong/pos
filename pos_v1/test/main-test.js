@@ -2,10 +2,11 @@
 
 describe('pos', () => {
   describe('buildCartItems', () => {
-    let inputs;
+    let tags;
+    const allItems = loadAllItems();
 
     beforeEach(() => {
-      inputs = [
+      tags = [
         'ITEM000001',
         'ITEM000001',
         'ITEM000001',
@@ -19,7 +20,7 @@ describe('pos', () => {
     });
 
     it('printf cartItems', () => {
-      const cartItems = buildCartItems(inputs);
+      const cartItems = buildCartItems(tags,allItems);
 
       const expectText = [
         {
@@ -55,6 +56,8 @@ describe('pos', () => {
   });
 
   describe('buildItemsSubtotal', () => {
+
+    const allPromotions = loadPromotions();
     let cartItems = [
       {
         item: {
@@ -86,7 +89,7 @@ describe('pos', () => {
     ];
 
     it("printf ItemsSubotal", () => {
-      const itemsSubtotal = buildItemsSubtotal(cartItems);
+      const itemsSubtotal = buildReceiptItems(cartItems,allPromotions);
 
       const expectText = [
         {
@@ -99,7 +102,7 @@ describe('pos', () => {
             },
             count: 5
           },
-          saveprice: 3.00,
+          saved: 3.00,
           subtotal: 12.00
         },
         {
@@ -112,7 +115,7 @@ describe('pos', () => {
             },
             count: 2
           },
-          saveprice: 0.00,
+          saved: 0.00,
           subtotal: 30.00
         },
         {
@@ -125,7 +128,7 @@ describe('pos', () => {
             },
             count: 3
           },
-          saveprice: 4.50,
+          saved: 4.50,
           subtotal: 9.00
         }
       ]
@@ -145,7 +148,7 @@ describe('pos', () => {
           },
           count: 5
         },
-        saveprice: 3.00,
+        saved: 3.00,
         subtotal: 12.00
       },
       {
@@ -158,7 +161,7 @@ describe('pos', () => {
           },
           count: 2
         },
-        saveprice: 0.00,
+        saved: 0.00,
         subtotal: 30.00
       },
       {
@@ -171,16 +174,16 @@ describe('pos', () => {
           },
           count: 3
         },
-        saveprice: 4.50,
+        saved: 4.50,
         subtotal: 9.00
       }
     ]
 
     it("printf ItemsReceipt", () => {
-      const itemsReceipt = buildItemsReceipt(itemsSubtotal);
+      const itemsReceipt = buildReceipt(itemsSubtotal);
 
       const expectText = {
-        itemsSubtotal: [
+        receiptItems: [
           {
             cartItem: {
               item: {
@@ -191,7 +194,7 @@ describe('pos', () => {
               },
               count: 5
             },
-            saveprice: 3.00,
+            saved: 3.00,
             subtotal: 12.00
           },
           {
@@ -204,7 +207,7 @@ describe('pos', () => {
               },
               count: 2
             },
-            saveprice: 0.00,
+            saved: 0.00,
             subtotal: 30.00
           },
           {
@@ -217,12 +220,12 @@ describe('pos', () => {
               },
               count: 3
             },
-            saveprice: 4.50,
+            saved: 4.50,
             subtotal: 9.00
           }
         ],
         total: 51.00,
-        save: 7.50
+        saveTotal: 7.50
       }
       expect(itemsReceipt).toEqual(expectText);
     });
@@ -230,7 +233,7 @@ describe('pos', () => {
 
   describe("outputReceipt", () => {
     let itemsReceipt = {
-      itemsSubtotal: [
+      receiptItems: [
         {
           cartItem: {
             item: {
@@ -241,7 +244,7 @@ describe('pos', () => {
             },
             count: 5
           },
-          saveprice: 3.00,
+          saved: 3.00,
           subtotal: 12.00
         },
         {
@@ -254,7 +257,7 @@ describe('pos', () => {
             },
             count: 2
           },
-          saveprice: 0.00,
+          saved: 0.00,
           subtotal: 30.00
         },
         {
@@ -267,16 +270,16 @@ describe('pos', () => {
             },
             count: 3
           },
-          saveprice: 4.50,
+          saved: 4.50,
           subtotal: 9.00
         }
       ],
       total: 51.00,
-      save: 7.50
+      saveTotal: 7.50
     }
 
     it("printf Receipt", () => {
-      const receipt = outputReceipt(itemsReceipt);
+      const receipt = buildReceiptText(itemsReceipt);
 
       const expectText = `***<没钱赚商店>收据***
 名称：雪碧，数量：5瓶，单价：3.00(元)，小计：12.00(元)
@@ -290,10 +293,10 @@ describe('pos', () => {
     });
   });
 
-  let inputs;
+  let tags;
 
   beforeEach(() => {
-    inputs = [
+    tags = [
       'ITEM000001',
       'ITEM000001',
       'ITEM000001',
@@ -310,7 +313,7 @@ describe('pos', () => {
 
     spyOn(console, 'log');
 
-    printReceipt(inputs);
+    printReceipt(tags);
 
     const expectText = `***<没钱赚商店>收据***
 名称：雪碧，数量：5瓶，单价：3.00(元)，小计：12.00(元)
